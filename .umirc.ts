@@ -6,5 +6,5 @@ export default defineConfig({
   npmClient: 'yarn',
   plugins: ['@umijs/plugins/dist/antd'],
   outputPath: 'docs',
-  base: '/webVsocde/'
+  publicPath: '/webVsocde/',
 })
