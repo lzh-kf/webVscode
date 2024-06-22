@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.centerContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewContainer {
+  height: calc(100vh - 96px);
+  overflow: scroll;
+}
+
+.img {
+  margin: auto;
+  width: auto;
+  height: auto;
+  max-width: 50vw;
+  max-height: 50vh;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.save {
+  position: sticky;
+  top: 0px;
+  padding: 10px;
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+  background-color: #fff;
+}
+
+[contenteditable] {
+  outline: 1px solid transparent;
+}
+
+pre {
+  padding: 10px;
+  flex: 1;
+  box-sizing: border-box;
+}
