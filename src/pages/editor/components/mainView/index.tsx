@@ -69,6 +69,8 @@ const MainView = (props: Props) => {
       const { kind } = props.currentFile.handle
       if (kind === FileTypes.file) {
         getFileContent()
+      } else {
+        handleResetData()
       }
     }
   }, [props.currentFile])

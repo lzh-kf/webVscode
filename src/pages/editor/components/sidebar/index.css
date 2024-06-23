@@ -1,5 +1,7 @@
 .container {
   box-sizing: border-box;
+  border-right: 1px solid rgba(5, 5, 5, 0.06);
+  height: 100%;
 }
 
 .icon {
@@ -10,6 +12,8 @@
 .tree {
   padding: 10px;
   box-sizing: border-box;
+  overflow-y: scroll;
+  height: calc(100vh - 96px);
 }
 
 .operation {
@@ -21,4 +25,18 @@
   border-bottom: 1px solid rgba(5, 5, 5, 0.06);
   display: flex;
   justify-content: flex-end;
+}
+
+.formItem {
+  display: flex;
+  align-items: center;
+}
+
+.inputContainer {
+  flex: 1;
+  margin-right: 5px;
+}
+
+.selectContainer {
+  width: 100px;
 }

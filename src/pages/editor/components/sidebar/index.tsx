@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Tree, Button, message, Form, Input, Modal, Tooltip } from 'antd'
+import { Tree, Button, message, Form, Input, Modal, Tooltip, Select } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import styles from './index.css'
 import type { FileItem } from '../../types/interface'
-import { FileTypes } from '../../types/constants'
+import { FileTypes, fileSuffixs } from '../../types/constants'
 import { getFolderChildren, delFilerOrFolderByKey } from '../../util'
 import type { FileType } from '../../interface'
 import createFile from '@/assets/img/create-file.png'
@@ -27,6 +27,11 @@ interface ModelFormProps {
   fileType: FileType | undefined
 }
 
+interface SeletcProps {
+  value: string
+  setValue: (val: string) => void
+}
+
 function ModelForm(props: ModelFormProps) {
 
   const [form] = Form.useForm()
@@ -34,6 +39,8 @@ function ModelForm(props: ModelFormProps) {
   const inputRef = useRef<any>()
 
   const [label, setLabel] = useState('')
+
+  const [value, setValue] = useState('html')
 
   useEffect(() => {
     const { fileType } = props
@@ -50,17 +57,17 @@ function ModelForm(props: ModelFormProps) {
       } : {
         name: '新建文件夹'
       })
-      inputRef.current?.focus({
-        cursor: 'end'
-      })
     }
-
   }, [props.open])
 
   const handleOk = () => {
     form.submit()
     const name = form.getFieldValue('name')
-    props.submit(name)
+    if (props.fileType === FileTypes.file && value !== 'custom') {
+      props.submit(`${name}.${value}`)
+    } else {
+      props.submit(name)
+    }
     props.setOpen(false)
     form.resetFields()
   }
@@ -70,17 +77,53 @@ function ModelForm(props: ModelFormProps) {
     props.setOpen(false)
   }
 
+
+  const SelectNode = (props: SeletcProps) => {
+    const createlabel = (val: string) => <span>{val}</span>
+
+    const options = fileSuffixs.map(item => {
+      return {
+        value: item,
+        label: createlabel(item)
+      }
+    })
+
+    return (
+      <Select options={options} defaultValue={props.value} onChange={props.setValue} />
+    )
+  }
+
   return (
-    <Modal title={`创建${label}确认框？`} open={props.open} onOk={handleOk} onCancel={handleCancel}>
+    <Modal
+      title={`确认创建${label}？`}
+      keyboard={false}
+      maskClosable={false}
+      open={props.open}
+      onOk={handleOk}
+      onCancel={handleCancel}
+    >
       <Form
         form={form}
       >
         <Form.Item<FieldType>
-          label={label}
+          label={`${label}名`}
           name="name"
           rules={[{ required: true, message: `请输入${label}名` }]}
         >
-          <Input ref={inputRef} placeholder={`请输入${label}名`} />
+          {
+            props.fileType === FileTypes.file ?
+              <div className={styles.formItem}>
+                <div className={styles.inputContainer}>
+                  <Input ref={inputRef} placeholder={`请输入${label}名`} suffix="文件后缀" />
+                </div>
+                <div className={styles.selectContainer}>
+                  <SelectNode value={value} setValue={setValue}></SelectNode>
+                </div>
+              </div>
+              :
+              <Input ref={inputRef} placeholder={`请输入${label}名`} />
+
+          }
         </Form.Item>
       </Form>
     </Modal>
@@ -176,13 +219,13 @@ const Sidebar = (props: Props) => {
 
   const handleCreate = async (msg: string, methodName: 'getFileHandle' | 'getDirectoryHandle') => {
     try {
-      const { parentHandle, value, parentId, fileType } = currentHandle.current
-      const handle = fileType === 'file' ? parentHandle : value
-      if (parentHandle) {
-        await handle[methodName](fileName, { create: true })
+      const { parentHandle, handle, parentId, fileType: type } = currentHandle.current
+      const fileHandle = type === FileTypes.file ? parentHandle : handle
+      if (parentHandle || type === FileTypes.directory) {
+        await fileHandle[methodName](fileName, { create: true })
         messageApi.success(`${msg}新增成功`)
       } else {
-        messageApi.error('找不到上级目录，请至少选择一个目录')
+        messageApi.error('选择单文件的模式下,默认是不可新增文件的')
         return
       }
       if (parentHandle) {
@@ -191,7 +234,7 @@ const Sidebar = (props: Props) => {
         updateChildrenByKey(tempData, parentId, children)
         props.changeFloders(tempData)
       } else {
-        const children = await getFolderChildren(value)
+        const children = await getFolderChildren(handle)
         props.changeFloders([{
           ...props.folders[0],
           children
@@ -224,7 +267,7 @@ const Sidebar = (props: Props) => {
       } catch (error) {
         const { name } = error as DOMException
         if (name === 'InvalidModificationError') {
-          messageApi.error(`请检查文件夹是否有嵌套，有嵌套默认是不可删除`)
+          messageApi.error(`请检查文件夹是否有嵌套文件/文件夹，有嵌套默认是不可删除`)
         } else {
           messageApi.error(`文件夹删除失败--->${error}`)
         }

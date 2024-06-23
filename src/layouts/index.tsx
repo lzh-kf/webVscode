@@ -1,9 +1,9 @@
 import { Outlet } from 'umi'
-import styles from './index.less'
+import './index.less'
 import 'normalize.css'
 export default function Layout(): JSX.Element {
   return (
-    <div className={styles.index}>
+    <div>
       <Outlet />
     </div>
   )

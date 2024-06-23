@@ -1,4 +1,5 @@
 import { defineConfig } from "umi"
+import zhCN from 'antd/locale/zh_CN'
 export default defineConfig({
   routes: [
     { path: "/", component: "@/pages/editor/index" }
@@ -8,5 +9,10 @@ export default defineConfig({
   outputPath: 'docs',
   base: '/webVsocde/',
   publicPath: '/webVsocde/',
-  title: '在线版vscode'
+  title: '在线版vscode',
+  antd: {
+    configProvider: {
+      locale: zhCN
+    }
+  }
 })
