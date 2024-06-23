@@ -8,4 +8,5 @@ export default defineConfig({
   outputPath: 'docs',
   base: '/webVsocde/',
   publicPath: '/webVsocde/',
+  title: '在线版vscode'
 })

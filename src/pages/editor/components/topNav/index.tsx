@@ -1,55 +1,61 @@
 import styles from './index.css'
-import { Dropdown, Button } from "antd"
+import { Dropdown, Button, message } from "antd"
 import type { MenuProps } from 'antd'
-import type { Children } from '../../interface'
-import { getFolderChildren, createFileIcon, createFolderIcon } from '../util'
-type Mode = 'readwrite' | 'read'
-const defaultOption: { mode: Mode } = {
-  mode: 'readwrite'
-}
+import type { FileItem } from '../../types/interface'
+import { FileTypes } from '../../types/constants'
+import { getFolderChildren, createFileItem } from '../../util'
+import { createFileIcon, createFolderIcon } from '../../createIcon'
+import selectImg from '@/assets/img/select.png'
 interface Props {
-  changeFloders: Function
-  changeRefreshFlag: Function
+  changeFloders: (folders: Array<FileItem>) => void
+  changeRefreshFlag: () => void
 }
-export default function TopNav(props: Props) {
+
+const TopNav = (props: Props) => {
+
+  const [messageApi, contextHolder] = message.useMessage()
+
   const handleOpenFile = () => {
     showOpenFilePicker().then(async (res) => {
       const [fileHandle] = res
       const { name: title } = fileHandle
-      const file: Children = {
+      const item: FileItem = {
+        title,
         key: '0',
         parentId: '-1',
-        title,
-        fileType: 'file',
-        sort: 1,
-        value: fileHandle,
-        isLeaf: true,
-        icon: createFileIcon
+        handle: fileHandle,
+        ...createFileItem(FileTypes.file)
       }
-      props.changeFloders([file])
+      props.changeFloders([item])
       props.changeRefreshFlag()
+    }).catch(() => {
+      messageApi.info('用户取消了')
     })
   }
+
   const handleOpenFolder = () => {
-    showDirectoryPicker(defaultOption).then(async (res) => {
+    showDirectoryPicker({ mode: 'readwrite' }).then(async (res) => {
       const { name: title } = res
-      const folder: Children = {
+      const folder: FileItem = {
+        title,
         key: '0',
         parentId: '-1',
-        title,
-        fileType: 'directory',
-        sort: 0,
-        children: [],
-        value: res,
-        isLeaf: false,
-        icon: createFolderIcon
+        handle: res,
+        ...createFileItem(FileTypes.directory)
       }
-      const children = await getFolderChildren(res)
-      folder.children = children
-      props.changeFloders([folder])
-      props.changeRefreshFlag()
+      try {
+        const children = await getFolderChildren(res)
+        folder.children = children
+        props.changeFloders([folder])
+        props.changeRefreshFlag()
+      } catch (error) {
+        messageApi.error(`读取文件夹错误---》${error}`)
+      }
+    }).catch(() => {
+      messageApi.info('用户取消了')
     })
   }
+
   const items: MenuProps['items'] = [
     {
       key: 1,
@@ -68,12 +74,17 @@ export default function TopNav(props: Props) {
       ),
     },
   ]
+
   return (
     <div className={styles.container}>
+      {contextHolder}
       <Dropdown menu={{ items }} placement="bottom">
-        <Button type="text">文件</Button>
+        <Button type="text" icon={<img src={selectImg} className={styles.icon}></img>}>选择文件</Button>
       </Dropdown>
+      <div className={styles.title}>主内容区域</div>
     </div>
   )
 }
+
+export default TopNav
 
