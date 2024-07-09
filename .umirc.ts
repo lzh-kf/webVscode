@@ -7,8 +7,8 @@ export default defineConfig({
   npmClient: 'yarn',
   plugins: ['@umijs/plugins/dist/antd'],
   outputPath: 'docs',
-  base: '/webVsocde/',
-  publicPath: '/webVsocde/',
+  base: '/webVscode/',
+  publicPath: '/webVscode/',
   title: '在线版vscode',
   antd: {
     configProvider: {
