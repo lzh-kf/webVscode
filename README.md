@@ -6,8 +6,3 @@
 <br>后续考虑增加更多不同文件的预览。
 <br>
 [部署地址](https://lzh-kf.github.io/webVscode/)
-
-## 项目部分截图
-* 代码预览<br>
-<img src="/assets/vue-code.png"  style="width:900px;height:1800px" />
-<img src="/assets/react-code.png"  style="width:900px;height:1800px"  />
