@@ -79,7 +79,7 @@ const TopNav = (props: Props) => {
     <div className={styles.container}>
       {contextHolder}
       <Dropdown menu={{ items }} placement="bottom">
-        <Button type="text" icon={<img src={selectImg} className={styles.icon}></img>}>选择文件</Button>
+        <Button type="text" icon={<img src={selectImg} className={styles.icon}></img>}>选择文件123</Button>
       </Dropdown>
       <div className={styles.title}>主内容区域</div>
     </div>
