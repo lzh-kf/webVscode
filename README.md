@@ -1,4 +1,4 @@
-> 使用[react](https://react.docschina.org/)开发，基于[umi](https://umijs.org/)搭建。
+> 一个简易版本的网页版vscode，使用[react](https://react.docschina.org/)开发，基于[umi](https://umijs.org/)搭建。
 ### 支持以下功能
 1. 文件夹的增删改查。
 2. 文件的增删改查。
