@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import styles from './index.css'
 import TopNav from './components/topNav'
+import ExplanatoryPopup from './components/explanatoryPopup'
 import Sidebar from './components/sidebar'
 import MainView from './components/mainView'
 import type { FileItem } from './types/interface'
 import { delFilerOrFolderByKey } from './util'
+import firstLoadUtils from '@/utils/localStorge/firstLoad'
 
 const Editor = () => {
 
@@ -16,6 +18,8 @@ const Editor = () => {
 
   const [parentHandle, setParentHandle] = useState<FileSystemDirectoryHandle>()
 
+  const isLoad = useRef(firstLoadUtils.has())
+
   const handleDel = (key: string) => {
     const tempData = [...folders]
     delFilerOrFolderByKey(folders, key)
@@ -24,6 +28,7 @@ const Editor = () => {
 
   return (
     <div className={styles.container}>
+      {isLoad.current ? '' : <ExplanatoryPopup></ExplanatoryPopup>}
       <div>
         <TopNav changeFloders={setFolders} changeRefreshFlag={() => setRefreshFlag(!refreshFlag)}></TopNav>
       </div>
