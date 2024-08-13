@@ -13,8 +13,29 @@
 }
 
 .viewContainer {
+  position: relative;
   height: calc(100vh - 96px);
   overflow: scroll;
+  padding-left: 30px;
+  box-sizing: border-box;
+}
+
+.codeContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-top: 12.5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.codeLine {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+  color: #6e7681;
 }
 
 .img {

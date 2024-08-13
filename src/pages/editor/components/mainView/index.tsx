@@ -21,6 +21,8 @@ const MainView = (props: Props) => {
 
   const [currentView, setCurrentView] = useState<ViewType>()
 
+  const [codeLines, setCodeLines] = useState<Array<number>>([])
+
   const [base64, setBase64] = useState('')
 
   const [html, setHtml] = useState({ __html: '' })
@@ -47,7 +49,12 @@ const MainView = (props: Props) => {
         setCurrentView(Viewtypes.file)
         reader.onload = (event) => {
           try {
-            const html = hljs.highlightAuto(event.target?.result as string).value
+            const fileContent = event.target?.result
+            if (fileContent) {
+              const currentFileCodeLines = getCodeLines(fileContent as string)
+              setCodeLines(currentFileCodeLines)
+            }
+            const html = hljs.highlightAuto(fileContent as string).value
             setHtml({
               __html: html
             })
@@ -79,9 +86,18 @@ const MainView = (props: Props) => {
     handleResetData()
   }, [props.refreshFlag])
 
+  const getCodeLines = (fileContent: string) => {
+    const lineBreaks = fileContent.match(/\n/g)
+    const lines = lineBreaks?.map((item, index) => {
+      return index + 1
+    }) || []
+    return lines
+  }
+
   const handleResetData = () => {
     setCurrentView(Viewtypes.empty)
     setBase64('')
+    setCodeLines([])
     setHtml({ __html: '' })
   }
 
@@ -165,6 +181,15 @@ const MainView = (props: Props) => {
           {renderOperatingButton()}
         </div>
         <div className={styles.viewContainer}>
+          <div className={styles.codeContainer}>
+            {
+              codeLines.map((item) => {
+                return (
+                  <div className={styles.codeLine} key={item}>&nbsp;<span style={{ fontSize: '14px' }}>{item}</span>&nbsp;</div>
+                )
+              })
+            }
+          </div>
           <pre ref={preRef} dangerouslySetInnerHTML={html} contentEditable={true}>
           </pre>
         </div>
