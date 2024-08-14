@@ -91,6 +91,9 @@ const MainView = (props: Props) => {
     const lines = lineBreaks?.map((item, index) => {
       return index + 1
     }) || []
+    if (lines.length) {
+      lines.push((lines.at(-1) as number) + 1)
+    }
     return lines
   }
 

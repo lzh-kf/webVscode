@@ -5,7 +5,7 @@ export default defineConfig({
     { path: "/", component: "@/pages/editor/index" }
   ],
   npmClient: 'yarn',
-  plugins: ['@umijs/plugins/dist/antd'],
+  plugins: ['@umijs/plugins/dist/antd', './src/plugins/openBrowser.ts'],
   outputPath: 'docs',
   base: '/webVscode/',
   publicPath: '/webVscode/',
